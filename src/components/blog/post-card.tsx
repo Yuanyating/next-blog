@@ -1,10 +1,12 @@
-import Link from "next/link";
-import { format } from "date-fns";
-import { zhCN } from "date-fns/locale";
-import type { Post } from "@/types/post";
+'use client'
+
+import Link from 'next/link'
+import { format } from 'date-fns'
+import { zhCN } from 'date-fns/locale'
+import type { Post } from '@/types/post'
 
 interface PostCardProps {
-  post: Post;
+  post: Post
 }
 
 /**
@@ -12,7 +14,7 @@ interface PostCardProps {
  * 显示文章标题、描述、日期和标签
  */
 export function PostCard({ post }: PostCardProps) {
-  const { slug, frontmatter } = post;
+  const { slug, frontmatter } = post
 
   return (
     <article className="group rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
@@ -33,7 +35,7 @@ export function PostCard({ post }: PostCardProps) {
       <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
         {/* 日期 */}
         <time dateTime={frontmatter.date}>
-          {format(new Date(frontmatter.date), "yyyy年MM月dd日", {
+          {format(new Date(frontmatter.date), 'yyyy年MM月dd日', {
             locale: zhCN,
           })}
         </time>
@@ -77,5 +79,5 @@ export function PostCard({ post }: PostCardProps) {
         </div>
       )}
     </article>
-  );
+  )
 }

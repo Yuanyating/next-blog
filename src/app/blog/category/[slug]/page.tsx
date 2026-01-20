@@ -1,39 +1,49 @@
-import { notFound } from "next/navigation";
-import { getPostsByCategory, getCategoriesWithCount } from "@/lib/filters";
-import { PostCard } from "@/components/blog/post-card";
-import Link from "next/link";
+import { notFound } from 'next/navigation'
+import { getPostsByCategory, getCategoriesWithCount } from '@/lib/filters'
+import { PostCard } from '@/components/blog/post-card'
+import Link from 'next/link'
 
 /**
  * 生成静态参数
  */
 export async function generateStaticParams() {
-  const categories = await getCategoriesWithCount();
+  const categories = await getCategoriesWithCount()
   return categories.map((category) => ({
     slug: category.name.toLowerCase(),
-  }));
+  }))
 }
 
 /**
  * 生成元数据
  */
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
   return {
-    title: `分类: ${params.slug} - My Blog`,
-    description: `浏览 ${params.slug} 分类下的所有文章`,
-  };
+    title: `分类: ${slug} - My Blog`,
+    description: `浏览 ${slug} 分类下的所有文章`,
+  }
 }
 
 /**
  * 分类页面
  */
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
-  const posts = await getPostsByCategory(params.slug);
+export default async function CategoryPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const posts = await getPostsByCategory(slug)
 
   if (posts.length === 0) {
-    notFound();
+    notFound()
   }
 
-  const categoryName = posts[0].frontmatter.category || params.slug;
+  const categoryName = posts[0].frontmatter.category || slug
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-16">
@@ -62,5 +72,5 @@ export default async function CategoryPage({ params }: { params: { slug: string 
         ))}
       </div>
     </div>
-  );
+  )
 }

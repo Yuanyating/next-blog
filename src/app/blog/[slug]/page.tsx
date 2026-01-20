@@ -1,56 +1,66 @@
-import { notFound } from "next/navigation";
-import { getPostBySlug, getAllPostSlugs, getAllPosts } from "@/lib/mdx";
-import { format } from "date-fns";
-import { zhCN } from "date-fns/locale";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { ArticleContent } from "@/components/blog/article-content";
-import { ReadingProgressWrapper } from "@/components/blog/reading-progress-wrapper";
-import { ViewCounter } from "@/components/blog/view-counter";
-import { SocialShare } from "@/components/blog/social-share";
-import { Comments } from "@/components/blog/comments";
-import { RelatedPosts } from "@/components/blog/related-posts";
+import { notFound } from 'next/navigation'
+import { getPostBySlug, getAllPostSlugs, getAllPosts } from '@/lib/mdx'
+import { format } from 'date-fns'
+import { zhCN } from 'date-fns/locale'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
+import { ArticleContent } from '@/components/blog/article-content'
+import { ReadingProgressWrapper } from '@/components/blog/reading-progress-wrapper'
+import { ViewCounter } from '@/components/blog/view-counter'
+import { SocialShare } from '@/components/blog/social-share'
+import { Comments } from '@/components/blog/comments'
+import { RelatedPosts } from '@/components/blog/related-posts'
 
 /**
  * 生成静态参数
  */
 export async function generateStaticParams() {
-  const slugs = await getAllPostSlugs();
+  const slugs = await getAllPostSlugs()
   return slugs.map((slug) => ({
     slug,
-  }));
+  }))
 }
 
 /**
  * 生成元数据
  */
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const post = await getPostBySlug(slug)
 
   if (!post) {
     return {
-      title: "文章不存在",
-    };
+      title: '文章不存在',
+    }
   }
 
   return {
     title: `${post.frontmatter.title} - My Blog`,
     description: post.frontmatter.description,
-  };
+  }
 }
 
 /**
  * 文章详情页
  */
-export default async function PostPage({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug);
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const post = await getPostBySlug(slug)
 
   if (!post) {
-    notFound();
+    notFound()
   }
 
-  const { frontmatter, content } = post;
-  const allPosts = await getAllPosts();
+  const { frontmatter, content } = post
+  const allPosts = await getAllPosts()
 
   return (
     <>
@@ -97,7 +107,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
               {/* 日期 */}
               <div className="flex items-center gap-2">
                 <time dateTime={frontmatter.date}>
-                  {format(new Date(frontmatter.date), "yyyy年MM月dd日", {
+                  {format(new Date(frontmatter.date), 'yyyy年MM月dd日', {
                     locale: zhCN,
                   })}
                 </time>
@@ -113,11 +123,11 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
               {/* 浏览量 */}
               <span>·</span>
-              <ViewCounter slug={params.slug} />
+              <ViewCounter slug={slug} />
             </div>
 
             {/* 分享按钮 */}
-            <SocialShare title={frontmatter.title} url={`/blog/${params.slug}`} />
+            <SocialShare title={frontmatter.title} url={`/blog/${slug}`} />
           </div>
 
           {/* 标签 */}
@@ -143,8 +153,8 @@ export default async function PostPage({ params }: { params: { slug: string } })
         <RelatedPosts currentPost={post} allPosts={allPosts} />
 
         {/* 评论区 */}
-        <Comments slug={params.slug} />
+        <Comments />
       </div>
     </>
-  );
+  )
 }

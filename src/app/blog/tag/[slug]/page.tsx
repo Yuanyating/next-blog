@@ -1,45 +1,58 @@
-import { notFound } from "next/navigation";
-import { getPostsByTag, getTagsWithCount } from "@/lib/filters";
-import { PostCard } from "@/components/blog/post-card";
-import Link from "next/link";
+import { notFound } from 'next/navigation'
+import { getPostsByTag, getTagsWithCount } from '@/lib/filters'
+import { PostCard } from '@/components/blog/post-card'
+import Link from 'next/link'
 
 /**
  * 生成静态参数
  */
 export async function generateStaticParams() {
-  const tags = await getTagsWithCount();
+  const tags = await getTagsWithCount()
   return tags.map((tag) => ({
     slug: tag.name.toLowerCase(),
-  }));
+  }))
 }
 
 /**
  * 生成元数据
  */
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
   return {
-    title: `标签: ${params.slug} - My Blog`,
-    description: `浏览标签为 ${params.slug} 的所有文章`,
-  };
+    title: `标签: ${slug} - My Blog`,
+    description: `浏览标签为 ${slug} 的所有文章`,
+  }
 }
 
 /**
  * 标签页面
  */
-export default async function TagPage({ params }: { params: { slug: string } }) {
-  const posts = await getPostsByTag(params.slug);
+export default async function TagPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const posts = await getPostsByTag(slug)
 
   if (posts.length === 0) {
-    notFound();
+    notFound()
   }
 
   // 找到匹配的标签名（保持原始大小写）
-  const tagName = posts.reduce((found, post) => {
-    if (found) return found;
-    return post.frontmatter.tags?.find(
-      (tag) => tag.toLowerCase() === params.slug.toLowerCase()
-    );
-  }, "" as string | undefined);
+  const tagName = posts.reduce(
+    (found, post) => {
+      if (found) return found
+      return post.frontmatter.tags?.find(
+        (tag) => tag.toLowerCase() === slug.toLowerCase()
+      )
+    },
+    '' as string | undefined
+  )
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-16">
@@ -54,7 +67,7 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
       {/* 页面标题 */}
       <div className="mb-12">
         <h1 className="mb-4 text-4xl font-bold tracking-tight">
-          标签: {tagName || params.slug}
+          标签: {tagName || slug}
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-400">
           共 {posts.length} 篇文章
@@ -68,5 +81,5 @@ export default async function TagPage({ params }: { params: { slug: string } }) 
         ))}
       </div>
     </div>
-  );
+  )
 }
