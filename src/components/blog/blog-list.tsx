@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import { useState, useMemo } from "react";
-import { PostCard } from "./post-card";
-import { SearchInput } from "./search-input";
-import type { Post } from "@/types/post";
+import { useState } from 'react'
+import { PostCard } from './post-card'
+import { SearchInput } from './search-input'
+import type { Post } from '@/types/post'
 
 interface BlogListProps {
-  posts: Post[];
+  posts: Post[]
 }
 
 /**
@@ -14,10 +14,10 @@ interface BlogListProps {
  * 包含搜索功能
  */
 export function BlogList({ posts }: BlogListProps) {
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>(posts);
+  const [filteredPosts, setFilteredPosts] = useState<Post[]>(posts)
 
-  const totalCount = posts.length;
-  const filteredCount = filteredPosts.length;
+  const totalCount = posts.length
+  const filteredCount = filteredPosts.length
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-16">
@@ -49,5 +49,5 @@ export function BlogList({ posts }: BlogListProps) {
         </div>
       )}
     </div>
-  );
+  )
 }

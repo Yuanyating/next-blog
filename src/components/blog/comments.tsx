@@ -1,11 +1,7 @@
-"use client";
+'use client'
 
-import Giscus from "@giscus/react";
-import { useTheme } from "next-themes";
-
-interface CommentsProps {
-  slug: string;
-}
+import Giscus from '@giscus/react'
+import { useTheme } from 'next-themes'
 
 /**
  * Giscus 评论组件
@@ -17,14 +13,15 @@ interface CommentsProps {
  * NEXT_PUBLIC_GISCUS_CATEGORY - Discussion 分类
  * NEXT_PUBLIC_GISCUS_CATEGORY_ID - 分类 ID
  */
-export function Comments({ slug }: CommentsProps) {
-  const { theme, resolvedTheme } = useTheme();
-  const currentTheme = theme === "dark" || resolvedTheme === "dark" ? "dark" : "light";
+export function Comments() {
+  const { theme, resolvedTheme } = useTheme()
+  const currentTheme =
+    theme === 'dark' || resolvedTheme === 'dark' ? 'dark' : 'light'
 
-  const repo = process.env.NEXT_PUBLIC_GISCUS_REPO;
-  const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID;
-  const category = process.env.NEXT_PUBLIC_GISCUS_CATEGORY || "Announcements";
-  const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID;
+  const repo = process.env.NEXT_PUBLIC_GISCUS_REPO
+  const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID
+  const category = process.env.NEXT_PUBLIC_GISCUS_CATEGORY || 'Announcements'
+  const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID
 
   // 如果没有配置 Giscus，不显示评论区
   if (!repo || !repoId || !categoryId) {
@@ -35,7 +32,7 @@ export function Comments({ slug }: CommentsProps) {
           评论功能尚未配置。请在 .env.local 中配置 Giscus 环境变量。
         </p>
       </div>
-    );
+    )
   }
 
   return (
@@ -43,7 +40,7 @@ export function Comments({ slug }: CommentsProps) {
       <h3 className="mb-6 text-2xl font-bold">评论</h3>
       <Giscus
         id="comments"
-        repo={repo}
+        repo={repo as `${string}/${string}`}
         repoId={repoId}
         category={category}
         categoryId={categoryId}
@@ -58,5 +55,5 @@ export function Comments({ slug }: CommentsProps) {
         loading="lazy"
       />
     </div>
-  );
+  )
 }
